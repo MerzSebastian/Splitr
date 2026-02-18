@@ -229,25 +229,22 @@ function processImage() {
             }
         }
         
-        // Find rectangles and largest one
+        // Find the largest contour as the "original"
         let originalRect = null;
         let originalArea = 0;
+        let originalIndex = -1;
         
-        if (!params.noOriginal) {
-            let rectangles = filteredContours.filter(item => {
-                let perimeter = cv.arcLength(item.contour, true);
-                let approx = new cv.Mat();
-                cv.approxPolyDP(item.contour, approx, 0.02 * perimeter, true);
-                let isRect = approx.rows >= 4 && approx.rows <= 6;
-                approx.delete();
-                return isRect;
+        if (!params.noOriginal && filteredContours.length > 1) {
+            // Simply pick the largest contour — the "original" is always the
+            // biggest detected object.  We store its index so the identity
+            // check below can reliably skip it in the fragment list.
+            filteredContours.forEach((item, i) => {
+                if (item.area > originalArea) {
+                    originalArea = item.area;
+                    originalRect = item.contour;
+                    originalIndex = i;
+                }
             });
-            
-            if (rectangles.length > 0) {
-                rectangles.sort((a, b) => b.area - a.area);
-                originalRect = rectangles[0].contour;
-                originalArea = rectangles[0].area;
-            }
         }
         
         // Calculate fragments
@@ -256,7 +253,7 @@ function processImage() {
         
         filteredContours.forEach((item, i) => {
             // Skip original in normal mode
-            if (!params.noOriginal && originalRect && item.contour === originalRect) {
+            if (!params.noOriginal && originalRect && i === originalIndex) {
                 return;
             }
             
