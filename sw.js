@@ -1,4 +1,4 @@
-const CACHE_NAME = 'splitr-v1';
+const CACHE_NAME = 'splitr-v2';
 const urlsToCache = [
   './',
   './index.html',
