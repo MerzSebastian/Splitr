@@ -2,7 +2,7 @@
 
 A browser-based PWA that uses OpenCV.js (WebAssembly) to detect, outline, and measure the relative area of fragments in an image — no server, no upload, fully offline after first load.
 
-**Live:** `https://MerzSebastian.GitHub.io/Splitr/`
+**Live:** [https://MerzSebastian.GitHub.io/Splitr/](https://MerzSebastian.GitHub.io/Splitr/)
 
 ---
 

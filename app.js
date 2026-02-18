@@ -322,9 +322,10 @@ function drawLabelWithBackground(mat, text, x, y, fontScale, textColor) {
     const padding   = 4;
     const bgColor   = new cv.Scalar(255, 255, 255, 220);
 
-    const size      = cv.getTextSize(text, font, fontScale, thickness);
-    const tw        = size.size.width;
-    const th        = size.size.height;
+    // Estimate text size without cv.getTextSize (not available in browser build).
+    // Hershey Simplex base height ≈ 22 px at fontScale 1; width ≈ 17 px per char.
+    const th = Math.round(22 * fontScale);
+    const tw = Math.round(text.length * 17 * fontScale);
 
     // filled background rect
     cv.rectangle(
