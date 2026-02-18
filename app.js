@@ -3,6 +3,10 @@ let cv = null;
 let originalImage = null;
 let isOpenCvReady = false;
 
+// Max pixel dimension for processing (longest edge).
+// Larger images are downscaled on upload to keep CV fast on mobile.
+const MAX_DIMENSION = 1000;
+
 // Helper: format a value with an optional unit
 function fmt(value, decimals = 2) {
     const u = params.unit ? ' ' + params.unit : '';
@@ -24,7 +28,7 @@ const elements = {
 const params = {
     blur: 5,
     threshold: 180,
-    morphSize: 7,
+    morphSize: 1,
     morphClose: 3,
     morphOpen: 2,
     minArea: 5000,
@@ -38,7 +42,7 @@ const params = {
 const DEFAULTS = {
     blur: 5,
     threshold: 180,
-    morphSize: 7,
+    morphSize: 1,
     morphClose: 3,
     morphOpen: 2,
     minArea: 5000
@@ -161,7 +165,24 @@ function handleImageUpload(e) {
     reader.onload = (event) => {
         const img = new Image();
         img.onload = () => {
-            originalImage = cv.imread(img);
+            let w = img.width;
+            let h = img.height;
+
+            // Only downscale on mobile / touch devices to keep CV fast
+            const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+            if (isMobile && Math.max(w, h) > MAX_DIMENSION) {
+                const scale = MAX_DIMENSION / Math.max(w, h);
+                w = Math.round(w * scale);
+                h = Math.round(h * scale);
+            }
+
+            const tmpCanvas = document.createElement('canvas');
+            tmpCanvas.width = w;
+            tmpCanvas.height = h;
+            tmpCanvas.getContext('2d').drawImage(img, 0, 0, w, h);
+
+            if (originalImage) { originalImage.delete(); }
+            originalImage = cv.imread(tmpCanvas);
             processImage();
             elements.saveBtn.disabled = false;
         };

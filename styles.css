@@ -241,9 +241,10 @@ html, body {
 
 .slider-track-wrap {
     position: relative;
-    height: 1.25rem;
+    height: 2.75rem;
     display: flex;
     align-items: center;
+    touch-action: none;
 }
 
 .slider {
@@ -260,8 +261,8 @@ html, body {
 .slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 16px;
-    height: 16px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     background: var(--surface);
     border: 2px solid var(--teal);
@@ -274,8 +275,8 @@ html, body {
 }
 
 .slider::-moz-range-thumb {
-    width: 16px;
-    height: 16px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     background: var(--surface);
     border: 2px solid var(--teal);
